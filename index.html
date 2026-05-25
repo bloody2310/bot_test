@@ -6,66 +6,60 @@
     <title>Zentara App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        /* Основний фон (як фон чату в Telegram) */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            background-color: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
             margin: 0;
             padding: 16px;
         }
 
-        #greeting {
-            margin-top: 5px;
+        /* Імітація текстового повідомлення від бота */
+        .bot-message {
+            font-size: 16px;
+            line-height: 1.5;
             margin-bottom: 20px;
-            margin-left: 16px;
-            font-size: 22px;
         }
 
-        .section-title {
-            font-size: 13px;
-            text-transform: uppercase;
-            color: var(--tg-theme-hint-color, #888888);
-            margin-bottom: 8px;
-            margin-left: 16px;
-            letter-spacing: 0.5px;
+        /* Контейнер для кнопок */
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Відстань між кнопками */
         }
 
-        .list-group {
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .list-item {
+        /* Імітація інлайн-кнопки Telegram */
+        .tg-button {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
-            transition: background-color 0.2s;
-        }
-        
-        .list-item:active { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); }
-        .list-item:last-child { border-bottom: none; }
-
-        .item-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            justify-content: center; /* Текст по центру, як в інлайн-кнопках */
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            color: var(--tg-theme-text-color, #000000);
+            border: none;
+            border-radius: 8px; /* Характерне заокруглення інлайн-кнопок */
+            padding: 14px;
             font-size: 16px;
             font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.1s;
         }
 
-        .item-icon { font-size: 24px; }
-        .chevron { color: var(--tg-theme-hint-color, #c7c7cc); font-size: 18px; font-weight: bold; }
+        .tg-button:active {
+            opacity: 0.6; /* Анімація при натисканні */
+        }
+
+        .emoji {
+            margin-right: 6px;
+            font-size: 18px;
+        }
 
         /* Кнопка "Назад" для екрану читання */
         .back-btn {
             background: none;
             border: none;
-            color: var(--tg-theme-button-color, #007aff);
+            color: var(--tg-theme-button-color, #3390ec);
             font-size: 16px;
             padding: 0;
             margin-bottom: 20px;
@@ -79,34 +73,25 @@
 <body>
 
     <div id="modules-list">
-        <h2 id="greeting">Привіт!</h2>
         
-        <div class="section-title">Розділ навчання</div>
+        <div class="bot-message">
+            <b id="greeting">Привіт!</b><br><br>
+            <b>📚 Розділ навчання</b><br>
+            Тут ти знайдеш усю необхідну інформацію для старту роботи. Проходь модулі по черзі.
+        </div>
         
-        <div class="list-group">
-            <div class="list-item" onclick="loadModule(1)">
-                <div class="item-left">
-                    <span class="item-icon">🎓</span>
-                    <span>Вступ (Модуль 1)</span>
-                </div>
-                <div class="chevron">›</div>
-            </div>
+        <div class="keyboard">
+            <button class="tg-button" onclick="loadModule(1)">
+                <span class="emoji">🎓</span> Вступ (Модуль 1)
+            </button>
 
-            <div class="list-item" onclick="loadModule(2)">
-                <div class="item-left">
-                    <span class="item-icon">📜</span>
-                    <span>Правила (Модуль 2)</span>
-                </div>
-                <div class="chevron">›</div>
-            </div>
+            <button class="tg-button" onclick="loadModule(2)">
+                <span class="emoji">📜</span> Правила (Модуль 2)
+            </button>
 
-            <div class="list-item" onclick="loadModule(3)">
-                <div class="item-left">
-                    <span class="item-icon">💬</span>
-                    <span>Спілкування з лідами</span>
-                </div>
-                <div class="chevron">›</div>
-            </div>
+            <button class="tg-button" onclick="loadModule(3)">
+                <span class="emoji">💬</span> Спілкування з лідами
+            </button>
         </div>
     </div>
 
@@ -115,34 +100,30 @@
             <span style="font-size: 20px;">‹</span> Назад
         </button>
         
-        <h2 id="module-title">Завантаження...</h2>
+        <h2 id="module-title" style="margin-top: 0;">Завантаження...</h2>
         
-        <div class="list-group" style="padding: 16px;">
-            <div id="module-content" style="line-height: 1.6; font-size: 15px;"></div>
-        </div>
+        <div id="module-content" style="line-height: 1.6; font-size: 15px;"></div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
         
-        // Підставляємо ім'я (використовуємо зворотні лапки ` )
         let userName = tg.initDataUnsafe?.user?.first_name || "Колего";
-        document.getElementById("greeting").innerText = `Привіт, ${userName}!`;
+        document.getElementById("greeting").innerText = `Вітаємо, ${userName}! 🚀`;
 
+        // Твоє посилання ngrok
         const API_BASE_URL = "https://ethanol-discolor-subtract.ngrok-free.dev";
 
         async function loadModule(stageNumber) {
-            tg.HapticFeedback.selectionChanged(); // Вібрація
+            tg.HapticFeedback.selectionChanged();
 
-            // Ховаємо список, показуємо вікно читання
             document.getElementById('modules-list').style.display = 'none';
             document.getElementById('module-reader').style.display = 'block';
             document.getElementById('module-title').innerText = 'Завантаження...';
             document.getElementById('module-content').innerText = '';
 
             try {
-                // Використовуємо зворотні лапки ` для змінних
                 let response = await fetch(`${API_BASE_URL}/api/module/${stageNumber}`);
                 
                 if (response.ok) {
@@ -161,7 +142,6 @@
 
         function closeModule() {
             tg.HapticFeedback.selectionChanged();
-            // Повертаємось до списку
             document.getElementById('module-reader').style.display = 'none';
             document.getElementById('modules-list').style.display = 'block';
         }
