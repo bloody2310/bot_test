@@ -2,57 +2,174 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Навчальний портал</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LMS Платформа</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Базові стилі, які адаптуються під тему Telegram користувача */
+        /* Базові стилі та кольори Telegram */
         body {
             font-family: sans-serif;
             background-color: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
             margin: 0;
+            padding: 0;
+            padding-bottom: 70px; /* Відступ для нижнього меню */
+        }
+
+        h2 { text-align: center; margin-top: 20px; }
+        .description { text-align: center; color: var(--tg-theme-hint-color, #888888); padding: 0 15px; }
+
+        /* Контейнери для "сторінок" */
+        .page {
+            display: none; /* Ховаємо всі сторінки за замовчуванням */
             padding: 20px;
+            animation: fadeIn 0.3s;
+        }
+        .page.active {
+            display: block; /* Показуємо тільки активну */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Стилі карток/кнопок на сторінках */
+        .card {
+            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Нижнє навігаційне меню */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            border-top: 1px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--tg-theme-hint-color, #888888);
+            font-size: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-        }
-        h2 { margin-bottom: 5px; text-align: center; }
-        p { text-align: center; color: var(--tg-theme-hint-color, #888888); }
-        .btn {
-            width: 100%;
-            max-width: 300px;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            background-color: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            font-size: 16px;
-            font-weight: bold;
+            gap: 4px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 25%;
         }
-        .btn:active { transform: scale(0.98); }
+
+        .tab-btn.active {
+            color: var(--tg-theme-button-color, #3390ec);
+        }
+
+        .tab-icon { font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <h2 id="greeting">Вітаємо!</h2>
-    <p>Обери потрібний розділ для роботи</p>
+    <div id="page-training" class="page active">
+        <h2 id="greeting">Навчання</h2>
+        <p class="description">Пройди всі модулі по черзі.</p>
+        
+        <div class="card" onclick="tg.showAlert('Відкриваємо Модуль 1...')">
+            📚 Модуль 1: Вступ
+        </div>
+        <div class="card" style="opacity: 0.5;" onclick="tg.showAlert('Спочатку пройди Модуль 1!')">
+            🔒 Модуль 2: Спілкування з лідами
+        </div>
+    </div>
 
-    <button class="btn" onclick="tg.showAlert('Тут буде 7 етапів навчання')">📚 Навчання</button>
-    <button class="btn" style="background-color: #f5b041;" onclick="tg.showAlert('Доступ закрито. Спочатку пройди навчання.')">📝 Екзамен</button>
-    <button class="btn" style="background-color: #27ae60;" onclick="tg.showAlert('Форма додавання лідів')">📊 Додати ліди</button>
+    <div id="page-exam" class="page">
+        <h2>Екзамен</h2>
+        <p class="description">25 запитань на перевірку знань.</p>
+        <div class="card" style="background-color: #f5b041; color: white;" onclick="tg.showAlert('Доступ закрито. Пройди навчання.')">
+            📝 Почати екзамен
+        </div>
+    </div>
+
+    <div id="page-leads" class="page">
+        <h2>Мої ліди</h2>
+        <p class="description">Внось кількість оброблених клієнтів.</p>
+        <div class="card" onclick="tg.showAlert('Форма додавання відкрита')">
+            ➕ Додати лідів
+        </div>
+    </div>
+
+    <div id="page-admin" class="page">
+        <h2>Адмін-панель</h2>
+        <p class="description">Керування командою та питаннями.</p>
+        <div class="card" onclick="tg.showAlert('Статистика команди Тімліда')">
+            👥 Моя команда
+        </div>
+        <div class="card" onclick="tg.showAlert('Редактор бази знань')">
+            ⚙️ Налаштування БЗ
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchPage('page-training', this)">
+            <span class="tab-icon">📚</span>
+            <span>Навчання</span>
+        </button>
+        <button class="tab-btn" onclick="switchPage('page-exam', this)">
+            <span class="tab-icon">📝</span>
+            <span>Екзамен</span>
+        </button>
+        <button class="tab-btn" onclick="switchPage('page-leads', this)">
+            <span class="tab-icon">📊</span>
+            <span>Ліди</span>
+        </button>
+        <button class="tab-btn" onclick="switchPage('page-admin', this)">
+            <span class="tab-icon">⚙️</span>
+            <span>Адмін</span>
+        </button>
+    </div>
 
     <script>
         // Ініціалізація Telegram Web App
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Розгортаємо додаток на весь екран
+        tg.expand(); 
 
-        // Отримуємо ім'я користувача і підставляємо в заголовок
-        let userName = tg.initDataUnsafe?.user?.first_name || "Воркер";
-        document.getElementById("greeting").innerText = `Вітаємо, ${userName}!`;
+        // Підставляємо ім'я
+        let userName = tg.initDataUnsafe?.user?.first_name || "Колего";
+        document.getElementById("greeting").innerText = `Привіт, ${userName}!`;
+
+        // Логіка перемикання вкладок
+        function switchPage(pageId, btnElement) {
+            // 1. Ховаємо всі сторінки
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 2. Знімаємо підсвітку з усіх кнопок меню
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 3. Показуємо потрібну сторінку
+            document.getElementById(pageId).classList.add('active');
+            // 4. Підсвічуємо натиснуту кнопку
+            btnElement.classList.add('active');
+            
+            // Легка вібрація при натисканні (працює на телефонах)
+            tg.HapticFeedback.selectionChanged();
+        }
     </script>
 
 </body>
