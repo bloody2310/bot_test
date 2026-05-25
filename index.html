@@ -3,188 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LMS Платформа</title>
+    <title>Zentara App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Базові стилі та кольори Telegram */
         body {
-            font-family: sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
             color: var(--tg-theme-text-color, #000000);
             margin: 0;
-            padding: 0;
-            padding-bottom: 70px; /* Відступ для нижнього меню */
+            padding: 16px;
         }
 
-        h2 { text-align: center; margin-top: 20px; }
-        .description { text-align: center; color: var(--tg-theme-hint-color, #888888); padding: 0 15px; }
-
-        /* Контейнери для "сторінок" */
-        .page {
-            display: none; /* Ховаємо всі сторінки за замовчуванням */
-            padding: 20px;
-            animation: fadeIn 0.3s;
-        }
-        .page.active {
-            display: block; /* Показуємо тільки активну */
+        #greeting {
+            margin-top: 5px;
+            margin-bottom: 20px;
+            margin-left: 16px;
+            font-size: 22px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            color: var(--tg-theme-hint-color, #888888);
+            margin-bottom: 8px;
+            margin-left: 16px;
+            letter-spacing: 0.5px;
         }
 
-        /* Стилі карток/кнопок на сторінках */
-        .card {
-            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            text-align: center;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Нижнє навігаційне меню */
-        .tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
+        .list-group {
             background-color: var(--tg-theme-bg-color, #ffffff);
-            border-top: 1px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 1000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
         }
 
-        .tab-btn {
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
+            transition: background-color 0.2s;
+        }
+        
+        .list-item:active { background-color: var(--tg-theme-secondary-bg-color, #f0f0f0); }
+        .list-item:last-child { border-bottom: none; }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .item-icon { font-size: 24px; }
+        .chevron { color: var(--tg-theme-hint-color, #c7c7cc); font-size: 18px; font-weight: bold; }
+
+        /* Кнопка "Назад" для екрану читання */
+        .back-btn {
             background: none;
             border: none;
-            color: var(--tg-theme-hint-color, #888888);
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
+            color: var(--tg-theme-button-color, #007aff);
+            font-size: 16px;
+            padding: 0;
+            margin-bottom: 20px;
             cursor: pointer;
-            width: 25%;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-
-        .tab-btn.active {
-            color: var(--tg-theme-button-color, #3390ec);
-        }
-
-        .tab-icon { font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="page-training" class="page active">
+    <div id="modules-list">
+        <h2 id="greeting">Привіт!</h2>
         
-        <div id="modules-list">
-            <h2 id="greeting">Навчання</h2>
-            <p class="description">Пройди всі модулі по черзі.</p>
-            
-            <div class="card" onclick="loadModule(1)">
-                📚 Модуль 1: Вступ
+        <div class="section-title">Розділ навчання</div>
+        
+        <div class="list-group">
+            <div class="list-item" onclick="loadModule(1)">
+                <div class="item-left">
+                    <span class="item-icon">🎓</span>
+                    <span>Вступ (Модуль 1)</span>
+                </div>
+                <div class="chevron">›</div>
             </div>
-            <div class="card" onclick="loadModule(2)">
-                📚 Модуль 2: Обробка заперечень
+
+            <div class="list-item" onclick="loadModule(2)">
+                <div class="item-left">
+                    <span class="item-icon">📜</span>
+                    <span>Правила (Модуль 2)</span>
+                </div>
+                <div class="chevron">›</div>
+            </div>
+
+            <div class="list-item" onclick="loadModule(3)">
+                <div class="item-left">
+                    <span class="item-icon">💬</span>
+                    <span>Спілкування з лідами</span>
+                </div>
+                <div class="chevron">›</div>
             </div>
         </div>
-
-        <div id="module-reader" style="display: none;">
-            <button class="btn" style="background-color: #e0e0e0; color: black; margin-bottom: 15px;" onclick="closeModule()">⬅️ Назад до списку</button>
-            <h2 id="module-title">Завантаження...</h2>
-            <div id="module-content" style="margin-top: 20px; line-height: 1.5;"></div>
-            
-            <button class="btn" style="margin-top: 20px;" onclick="tg.showAlert('Тут буде контрольне запитання!')">Відповісти на питання</button>
-        </div>
     </div>
 
-    <div id="page-exam" class="page">
-        <h2>Екзамен</h2>
-        <p class="description">25 запитань на перевірку знань.</p>
-        <div class="card" style="background-color: #f5b041; color: white;" onclick="tg.showAlert('Доступ закрито. Пройди навчання.')">
-            📝 Почати екзамен
-        </div>
-    </div>
-
-    <div id="page-leads" class="page">
-        <h2>Мої ліди</h2>
-        <p class="description">Внось кількість оброблених клієнтів.</p>
-        <div class="card" onclick="tg.showAlert('Форма додавання відкрита')">
-            ➕ Додати лідів
-        </div>
-    </div>
-
-    <div id="page-admin" class="page">
-        <h2>Адмін-панель</h2>
-        <p class="description">Керування командою та питаннями.</p>
-        <div class="card" onclick="tg.showAlert('Статистика команди Тімліда')">
-            👥 Моя команда
-        </div>
-        <div class="card" onclick="tg.showAlert('Редактор бази знань')">
-            ⚙️ Налаштування БЗ
-        </div>
-    </div>
-
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchPage('page-training', this)">
-            <span class="tab-icon">📚</span>
-            <span>Навчання</span>
+    <div id="module-reader" style="display: none;">
+        <button class="back-btn" onclick="closeModule()">
+            <span style="font-size: 20px;">‹</span> Назад
         </button>
-        <button class="tab-btn" onclick="switchPage('page-exam', this)">
-            <span class="tab-icon">📝</span>
-            <span>Екзамен</span>
-        </button>
-        <button class="tab-btn" onclick="switchPage('page-leads', this)">
-            <span class="tab-icon">📊</span>
-            <span>Ліди</span>
-        </button>
-        <button class="tab-btn" onclick="switchPage('page-admin', this)">
-            <span class="tab-icon">⚙️</span>
-            <span>Адмін</span>
-        </button>
+        
+        <h2 id="module-title">Завантаження...</h2>
+        
+        <div class="list-group" style="padding: 16px;">
+            <div id="module-content" style="line-height: 1.6; font-size: 15px;"></div>
+        </div>
     </div>
 
     <script>
-        // Ініціалізація Telegram Web App
         let tg = window.Telegram.WebApp;
-        tg.expand(); 
-
-        // Підставляємо ім'я
+        tg.expand();
+        
+        // Підставляємо ім'я (використовуємо зворотні лапки ` )
         let userName = tg.initDataUnsafe?.user?.first_name || "Колего";
         document.getElementById("greeting").innerText = `Привіт, ${userName}!`;
 
-        // Логіка перемикання вкладок
-        function switchPage(pageId, btnElement) {
-            // 1. Ховаємо всі сторінки
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            // 2. Знімаємо підсвітку з усіх кнопок меню
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // 3. Показуємо потрібну сторінку
-            document.getElementById(pageId).classList.add('active');
-            // 4. Підсвічуємо натиснуту кнопку
-            btnElement.classList.add('active');
-            
-            // Легка вібрація при натисканні (працює на телефонах)
-            tg.HapticFeedback.selectionChanged();
-        }
-        // ВАЖЛИВО: Сюди треба буде вставити твоє HTTPS посилання на сервер FastAPI (наприклад, ngrok)
         const API_BASE_URL = "https://ethanol-discolor-subtract.ngrok-free.dev";
 
         async function loadModule(stageNumber) {
+            tg.HapticFeedback.selectionChanged(); // Вібрація
+
             // Ховаємо список, показуємо вікно читання
             document.getElementById('modules-list').style.display = 'none';
             document.getElementById('module-reader').style.display = 'block';
@@ -192,7 +142,7 @@
             document.getElementById('module-content').innerText = '';
 
             try {
-                // Робимо запит до нашого бекенду
+                // Використовуємо зворотні лапки ` для змінних
                 let response = await fetch(`${API_BASE_URL}/api/module/${stageNumber}`);
                 
                 if (response.ok) {
@@ -204,17 +154,17 @@
                     document.getElementById('module-content').innerText = 'Модуль ще не додано в базу.';
                 }
             } catch (error) {
-                document.getElementById('module-title').innerText = 'Помилка з\'єднання';
+                document.getElementById('module-title').innerText = "Помилка з'єднання";
                 document.getElementById('module-content').innerText = 'Перевірте підключення до сервера.';
             }
         }
 
         function closeModule() {
+            tg.HapticFeedback.selectionChanged();
             // Повертаємось до списку
             document.getElementById('module-reader').style.display = 'none';
             document.getElementById('modules-list').style.display = 'block';
         }
-
     </script>
 
 </body>
