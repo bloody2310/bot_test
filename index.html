@@ -85,14 +85,25 @@
 <body>
 
     <div id="page-training" class="page active">
-        <h2 id="greeting">Навчання</h2>
-        <p class="description">Пройди всі модулі по черзі.</p>
         
-        <div class="card" onclick="tg.showAlert('Відкриваємо Модуль 1...')">
-            📚 Модуль 1: Вступ
+        <div id="modules-list">
+            <h2 id="greeting">Навчання</h2>
+            <p class="description">Пройди всі модулі по черзі.</p>
+            
+            <div class="card" onclick="loadModule(1)">
+                📚 Модуль 1: Вступ
+            </div>
+            <div class="card" onclick="loadModule(2)">
+                📚 Модуль 2: Обробка заперечень
+            </div>
         </div>
-        <div class="card" style="opacity: 0.5;" onclick="tg.showAlert('Спочатку пройди Модуль 1!')">
-            🔒 Модуль 2: Спілкування з лідами
+
+        <div id="module-reader" style="display: none;">
+            <button class="btn" style="background-color: #e0e0e0; color: black; margin-bottom: 15px;" onclick="closeModule()">⬅️ Назад до списку</button>
+            <h2 id="module-title">Завантаження...</h2>
+            <div id="module-content" style="margin-top: 20px; line-height: 1.5;"></div>
+            
+            <button class="btn" style="margin-top: 20px;" onclick="tg.showAlert('Тут буде контрольне запитання!')">Відповісти на питання</button>
         </div>
     </div>
 
@@ -170,6 +181,40 @@
             // Легка вібрація при натисканні (працює на телефонах)
             tg.HapticFeedback.selectionChanged();
         }
+        // ВАЖЛИВО: Сюди треба буде вставити твоє HTTPS посилання на сервер FastAPI (наприклад, ngrok)
+        const API_BASE_URL = "https://ethanol-discolor-subtract.ngrok-free.dev";
+
+        async function loadModule(stageNumber) {
+            // Ховаємо список, показуємо вікно читання
+            document.getElementById('modules-list').style.display = 'none';
+            document.getElementById('module-reader').style.display = 'block';
+            document.getElementById('module-title').innerText = 'Завантаження...';
+            document.getElementById('module-content').innerText = '';
+
+            try {
+                // Робимо запит до нашого бекенду
+                let response = await fetch(`${API_BASE_URL}/api/module/${stageNumber}`);
+                
+                if (response.ok) {
+                    let data = await response.json();
+                    document.getElementById('module-title').innerText = data.title;
+                    document.getElementById('module-content').innerText = data.theory_text;
+                } else {
+                    document.getElementById('module-title').innerText = 'Помилка';
+                    document.getElementById('module-content').innerText = 'Модуль ще не додано в базу.';
+                }
+            } catch (error) {
+                document.getElementById('module-title').innerText = 'Помилка з\'єднання';
+                document.getElementById('module-content').innerText = 'Перевірте підключення до сервера.';
+            }
+        }
+
+        function closeModule() {
+            // Повертаємось до списку
+            document.getElementById('module-reader').style.display = 'none';
+            document.getElementById('modules-list').style.display = 'block';
+        }
+
     </script>
 
 </body>
